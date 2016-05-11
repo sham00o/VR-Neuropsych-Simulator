@@ -26,9 +26,10 @@ public class SwitchToSim : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
        
-            if (Input.GetKey(KeyCode.X))
+            if (Input.GetKey(KeyCode.JoystickButton2))
             {
                 //put the restart thing here
+			Debug.Log("pressed!");
                 cam1.SetActive(true);
                 cam2.SetActive(false);
             cam1.transform.position = startingPos1;
@@ -45,7 +46,7 @@ public class SwitchToSim : MonoBehaviour {
         }
         
         
-        if (Input.GetKey(KeyCode.Z))
+		if (Input.GetKey(KeyCode.JoystickButton3))
         {
             cam1.SetActive(false);
             cam2.SetActive(true);
