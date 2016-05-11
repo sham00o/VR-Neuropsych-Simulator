@@ -12,6 +12,8 @@ public class SwitchToSim : MonoBehaviour {
     Vector3 startingPos1 = new Vector3(-1, 11, -9);
     Vector3 startingRot1 = new Vector3(0, 180, 0);
     Vector3 startingRot2 = new Vector3(0, 270, 0);
+	bool zTwice = false;
+	bool reset = false;
     GameObject cam1; 
     GameObject cam2; 
    // bool simFlag = false;
@@ -25,10 +27,20 @@ public class SwitchToSim : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-       
-            if (Input.GetKey(KeyCode.X))
-            {
+		/*if (reset) {
+			cam2.SetActive(true);
+			cam2.transform.position = startingPos2;
+			cam2.transform.rotation = Quaternion.Euler(startingRot2);
+
+			//zzzzzDebug.Log("yo");
+			cam2.GetComponent<Rotation>().start = true;
+
+			reset = false;
+		}*/
+            if (Input.GetKey(KeyCode.JoystickButton2))
+		{	zTwice = false;
                 //put the restart thing here
+			Debug.Log("pressed!");
                 cam1.SetActive(true);
                 cam2.SetActive(false);
             cam1.transform.position = startingPos1;
@@ -44,8 +56,24 @@ public class SwitchToSim : MonoBehaviour {
 			cam2.GetComponent<Rotation> ().endFlag = false;
         }
         
-        
-        if (Input.GetKey(KeyCode.Z))
+		/*if (zTwice && Input.GetKey (KeyCode.JoystickButton3)) {
+			cam2.SetActive (false);
+			cam2.GetComponent<Rotation>().start = false;
+			cam2.GetComponent<Rotation>().startFlag = false;
+			cam2.GetComponent<Rotation>().turn_left_flag = false;
+			cam2.GetComponent<Rotation>().turn_right_flag = false;
+			cam2.GetComponent<Rotation>().start_protect = false;
+			cam2.GetComponent<Rotation>().startSpeed = 0;
+			cam2.GetComponent<Rotation> ().turn_right_flag2 = false;
+			cam2.GetComponent<Rotation> ().turn_right_flag3 = false;
+			cam2.GetComponent<Rotation> ().endFlag = false;
+			cam2.transform.position = startingPos2;
+			cam2.transform.rotation = Quaternion.Euler(startingRot2);
+			reset = true;
+
+
+		}*/		
+	if (Input.GetKey(KeyCode.JoystickButton3))
         {
             cam1.SetActive(false);
             cam2.SetActive(true);
@@ -54,6 +82,7 @@ public class SwitchToSim : MonoBehaviour {
 
             //zzzzzDebug.Log("yo");
             cam2.GetComponent<Rotation>().start = true;
+			zTwice = true;
         }
     }
 }

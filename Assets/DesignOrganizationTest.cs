@@ -18,7 +18,7 @@ public class DesignOrganizationTest : MonoBehaviour {
     bool noFlags = false;
     bool noFlagspre = true;
 	bool isSelecting = false;
-
+	bool noFlagspre1 = false;
     // Use this for initialization
     //TODO:
     //move coordinates to a proper room/space, can be done last.
@@ -53,35 +53,40 @@ public class DesignOrganizationTest : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-       if(Input.GetKeyDown(KeyCode.B) && testAflag)
+		if(Input.GetKeyDown(KeyCode.JoystickButton5) && testAflag)
         {
 			disappear_init ();
             disappear_A();
             disappear_A_small();
             testAflag = false;
-            noFlagspre = true;
+            noFlagspre1 = true;
         }
-        if (Input.GetKeyDown(KeyCode.B) && exampleFlag)
+        if (Input.GetKeyDown(KeyCode.JoystickButton5) && exampleFlag)
         {
             disappear_ex();
-            appear_A();
+			disappear_init();
+			appear_A();
             appear_A_small();
             testAflag = true;
             exampleFlag = false;
         }
-        if (Input.GetKeyDown(KeyCode.B) && noFlags){
+        if (Input.GetKeyDown(KeyCode.JoystickButton5) && noFlags){
             noFlags = false;
             exampleFlag = true;
             appear_ex();
 			show_board (false);
         }
-		if (Input.GetKeyDown(KeyCode.B) && noFlagspre){
+		if (Input.GetKeyDown(KeyCode.JoystickButton5) && noFlagspre){
 			appear_init ();
             noFlags = true;
             noFlagspre = false;
         }
+		if (noFlagspre1) {
+			noFlagspre = true;
+		}
 
-		if (Input.GetKeyDown ("1") && isSelecting) {
+
+		if (Input.GetKeyDown (KeyCode.JoystickButton1) && isSelecting) {
 			TextMesh curr = selectedBox.transform.Find ("Number").GetComponent<TextMesh> ();
 			string num = curr.text;
 			switch (num) {
@@ -109,7 +114,7 @@ public class DesignOrganizationTest : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown ("t")) {
+		if (Input.GetKeyDown (KeyCode.JoystickButton0)) {
 			select ();
 		}
 
@@ -275,7 +280,7 @@ public class DesignOrganizationTest : MonoBehaviour {
         
         int len = 5;
         float top = 12f;
-        int z = -11;
+        int z = -11;                                                                                                                                                            
         float x = .2f;
         for (int i = 0; i < len; i++)
         {

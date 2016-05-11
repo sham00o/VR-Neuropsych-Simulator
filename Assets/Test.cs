@@ -6,7 +6,7 @@ public class Test : MonoBehaviour {
 	GameObject fivePointTest;
 	TextMesh timer, board, instructions;
 
-	string welcome = "Welcome!\nTEST A - p key - simulator sickness test\nTEST B - k key - Design Organization Test\nTEST C - j key - Five Point Test\nRETURN - o key";
+	string welcome = "Welcome!\nX-Button - simulator sickness test\nRB Button- Design Organization Test\nTEST C - j key - Five Point Test\nRETURN - o key";
 	string fptDirections = "You have 2 minutes to connect 4 dots \nin as many ways a possible";
 
 	// Use this for initialization
