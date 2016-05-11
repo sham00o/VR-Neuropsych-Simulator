@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class DesignOrganizationTest : MonoBehaviour {
     public GameObject[] initial;
@@ -11,7 +12,7 @@ public class DesignOrganizationTest : MonoBehaviour {
     bool testAflag = false;
     bool testBflag = false;
     bool noFlags = true;
-    
+    bool noFlagspre = false;
 
     // Use this for initialization
     //TODO:
@@ -39,6 +40,15 @@ public class DesignOrganizationTest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+       if(Input.GetKeyDown(KeyCode.B) && testAflag)
+        {
+            disappear_A();
+            disappear_A_small();
+           testAflag = false;
+            noFlagspre = true;
+            appear_init();
+
+        }
         if (Input.GetKeyDown(KeyCode.B) && exampleFlag)
         {
             disappear_ex();
@@ -54,7 +64,11 @@ public class DesignOrganizationTest : MonoBehaviour {
             exampleFlag = true;
             appear_ex();
         }
-       
+        if (noFlagspre){
+            noFlags = true;
+            noFlagspre = false;
+        }
+        
 	}
     void init()
     {
@@ -80,6 +94,13 @@ public class DesignOrganizationTest : MonoBehaviour {
         for (int i = 0; i <6; i++)
         {
             initial[i].active = false;
+        }
+    }
+    void appear_init()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            initial[i].active = true;
         }
     }
     void example_init()

@@ -19,7 +19,7 @@ public class SwitchToSim : MonoBehaviour {
    // bool interFlag = false;
     void Start () {
         cam1 = GameObject.Find("OVRPlayerController");
-        cam2 = GameObject.Find("Plane");
+        cam2 = GameObject.Find("Plane2");
         cam2.SetActive(false);
     }
 	
@@ -36,7 +36,8 @@ public class SwitchToSim : MonoBehaviour {
             cam2.GetComponent<Rotation>().start = false;
             cam2.GetComponent<Rotation>().startFlag = false;
             cam2.GetComponent<Rotation>().turn_left_flag = false;
-            cam2.GetComponent<Rotation>().straightFlag = false;
+            cam2.GetComponent<Rotation>().turn_right_flag = false;
+            cam2.GetComponent<Rotation>().start_protect = false;
             cam2.GetComponent<Rotation>().startSpeed = 0;
         }
         

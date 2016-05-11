@@ -11,8 +11,10 @@ public class Rotation : MonoBehaviour {
     float MaxSpeed = 20.0f;
     public bool startFlag = false;
     public bool turn_left_flag = false;
-    public bool straightFlag = false;
+    public bool turn_right_flag = false;
     public  bool start = false;
+    public bool upFlag = false;
+    public bool start_protect = false;
     // Use this for initialization
     void Start () {
         
@@ -21,7 +23,7 @@ public class Rotation : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (start == false) { startSpeed = 0;startFlag = false; turn_left_flag = false; straightFlag = false;  }
+        if (start == false) { startSpeed = 0;startFlag = false; turn_left_flag = false; turn_right_flag = false;  }
         if (start)
         {
             float speedDiff = startSpeed * Time.deltaTime;
@@ -32,16 +34,24 @@ public class Rotation : MonoBehaviour {
             {
                 StartCoroutine("Speedup");
                 startFlag = false;
+                start_protect = true;
             }
             if (turn_left_flag)
             {
                 StartCoroutine("turn_left"); // change this time based on testing
                 StartCoroutine("str");
                
-                straightFlag = true;
+                turn_right_flag = true;
+                //upFlag = true;
                 
             }
-            if (straightFlag)
+           // if (upFlag)
+           // {
+             //   StartCoroutine("go_up");
+            //    StartCoroutine("str3");
+
+           // }
+            if (turn_right_flag)
             {
                 StartCoroutine("turn_right");
                 StartCoroutine("str2");
@@ -50,7 +60,7 @@ public class Rotation : MonoBehaviour {
 
             
 
-            if (Input.GetKey(KeyCode.JoystickButton0))
+            if (Input.GetKey(KeyCode.JoystickButton0) && !start_protect)
             {
                 startFlag = true;
             }/*
@@ -110,7 +120,7 @@ public class Rotation : MonoBehaviour {
     }
     void Speedup()
     {
-        startSpeed += speed*4f;
+        startSpeed += speed*40f;
         startFlag = false;
         turn_left_flag = true;
     }
@@ -130,13 +140,26 @@ public class Rotation : MonoBehaviour {
         transform.Rotate(0, lrotateDiff*2, 0);
     }
     IEnumerator str()
-    {
+    {   
         yield return new WaitForSeconds(3);
         turn_left_flag = false;
+        
     }
     IEnumerator str2()
     {
         yield return new WaitForSeconds(15);
-        straightFlag = false;
+        turn_right_flag = false;
+    }
+    IEnumerator go_up()
+    {
+        float rotateDiff = rotate * Time.deltaTime;
+        yield return new WaitForSeconds(7);
+        //rotate up for a bit, then even out
+        transform.Rotate(-rotateDiff*.5f, 0, 0);
+    }
+    IEnumerator str3()
+    {
+        yield return new WaitForSeconds(8);
+        upFlag = false;
     }
 }
