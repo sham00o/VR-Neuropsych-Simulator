@@ -1,100 +1,200 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class FivePointTest : MonoBehaviour {
-    public class dot {
-        public int edge { get; set; }
-        public int num { get; set; }
-        //representing this with a test object for now
-    }
-    public class edge
-    {
-        public dot n1; // lower number goes into here
-        public dot n2;
-        public int eType; // 0 is left |, 1 is top --, 2 is right |, 3 is bottom --, 4 is /, 5 is \
-    }
-    public class figure
-    {
-        dot num0 = new dot { edge = 0, num = 0 }; // bottom-left
-        dot num1 = new dot { edge = 0, num = 1 }; //top-left
-        dot num2 = new dot { edge = 0, num = 2 }; //top-right
-        dot num3 = new dot { edge = 0, num = 3 }; // bottom-right
-        dot num4 = new dot { edge = 0, num = 4 }; //middle dot
-  
 
-    }
+	TextMesh timer;
+	GameObject testObject;
+	GameObject highlightedSphere;
+	List<GameObject> selectedSpheres, sphereLines, models, modelLines;
+	float modelOffsetX;
+	float modelOffsetY;
+	int min, sec;
+	bool isRunning;
 
-    //make a structure that has five points
-    //mke it compatable with edges
-    //make is so when you click  a dot that dot is selected
-    // and when you click another dot,( unless its itself, in which case it is deselected)
-    //then it connects an edge to the dot , if the edge is already connected do nothing
-    //be able to click somewhere else, if that happens then the data with the dots is saved
-    //and a new set of dots takes its place
-    //have a tutorial in the beginning to set it up
-    //then on keypress it starts
-    // struct with dots to make iut appear at the end.
-    // Use this for initialization
     void Start () {
-	
+		min = 2;
+		sec = 0;
+		timer = GameObject.Find("Timer").GetComponent<TextMesh>();
+		highlightedSphere = null;
+		selectedSpheres = new List<GameObject> ();
+		sphereLines = new List<GameObject> ();
+		models = new List<GameObject> ();
+		modelLines = new List<GameObject> ();
+		modelOffsetX = 0.0f;
+		modelOffsetY = 0.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
-    edge createEdge(dot d1, dot d2)
-    { // do a check to see if d1 == d2, if it does this function is skipped, check if edge exists as well.
-        edge ret;
-        if (d2.num < d1.num)
-        {
-            ret = new edge { n1 = d2, n2 = d1 };
-        }
-        else
-        {
-            ret = new edge { n1 = d1, n2 = d2 };
-        }
-        
-        return ret;
-        
-    }
-    void edgeType(edge e) // four types, horizontal, vertical, right-inclinded /, left-inclined \
-    {
-        if(e.n1.num == 0 && e.n2.num == 1)
-        {
-            e.eType = 0;
-            return;
-        }
-        else if (e.n1.num == 2 && e.n2.num == 3)
-        {
-            e.eType = 2;
-            return;
-        }
-        else if (e.n1.num == 1 && e.n2.num == 2)
-        {
-            e.eType = 1;
-            return;
-        }
-        else if (e.n1.num == 0 && e.n2.num == 3)
-        {
-            e.eType = 3;
-        }
-        else if (e.n1.num == 0 && e.n2.num == 2)
-        {
-            e.eType = 4;
-            return;
-        }
-        else if (e.n1.num == 1 && e.n2.num == 3)
-        {
-            e.eType = 6;
-            return;
-        }
-        return;
-    }
-    void edge_orient(edge e) // spawns the lines based on eType
-    {
-        //or just draw lines from each dot to the next
-    }
+		if (Input.GetKeyDown ("v")) {
+			if (!isRunning) {
+				isRunning = true;
+				resetTest ();
+				StartCoroutine ("countdown");
+			} else {
+				isRunning = false;
+				StopCoroutine ("countdown");
+			}
+		}
 
+		if (Input.GetKeyDown ("t")) {
+			select ();
+		}
+
+		if (Input.GetKeyDown ("b")) {
+			undoSelect ();
+		}
+
+		if (Input.GetKeyDown ("g")) {
+			saveModel ();
+		}
+
+		Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit)) {
+			string target = hit.transform.name;
+			if (target == "TL" || target == "TR" || target == "MM" || target == "BL"|| target == "BR") {
+				if (highlightedSphere == null) {
+					highlightedSphere = hit.collider.gameObject;
+				}
+				if (highlightedSphere.transform.name != target) {
+					highlightedSphere.GetComponent<Select> ().isHighlighted = false;
+					highlightedSphere = hit.collider.gameObject;
+				}
+				hit.collider.gameObject.GetComponent<Select> ().isHighlighted = true;
+				print("I'm looking at " + target);
+			}
+		}
+	}
+
+	void resetTest() {
+		resetTestModel ();
+		foreach(GameObject model in models) {
+			Destroy(model);
+		}
+		foreach (GameObject line in modelLines) {
+			Destroy (line);
+		}
+		models = new List<GameObject> ();
+		modelLines = new List<GameObject> ();
+		modelOffsetX = 0.0f;
+		modelOffsetY = 0.0f;
+		min = 2;
+		sec = 0;
+	}
+
+	void resetTestModel() {
+		selectedSpheres = new List<GameObject> ();
+		foreach (GameObject line in sphereLines) {
+			Destroy (line);
+		}
+		sphereLines = new List<GameObject> ();
+	}
+
+	void transferSelectionToModel(GameObject model) {
+		Transform prev = null;
+		foreach (GameObject sphere in selectedSpheres) {
+			Transform curr = null;
+			switch (sphere.transform.name) {
+			case "TL":
+				curr = model.transform.Find ("UL");
+				break;
+			case "TR":
+				curr = model.transform.Find ("UR");
+				break;
+			case "MM":
+				curr = model.transform.Find ("M");
+				break;
+			case "BL":
+				curr = model.transform.Find ("LL");
+				break;
+			case "BR":
+				curr = model.transform.Find ("LR");
+				break;
+			}
+			curr.GetComponentInChildren<Select> ().isSelected = true;
+			if (prev != null && prev != curr) {
+				modelLines.Add(drawLine (prev.position, curr.position, Color.red));
+			}
+			prev = curr;
+			// reset point for new pattern
+			sphere.GetComponent<Select> ().isSelected = false;
+		}
+	}
+
+	void saveModel() {
+		if (models.Count < 27) {
+			GameObject model = (GameObject)Instantiate (Resources.Load ("Point Model"));
+			Vector3 orig = model.transform.position;
+			orig.x -= modelOffsetX;
+			orig.y -= modelOffsetY;
+			model.transform.position = orig;
+			modelOffsetX += 0.5f;
+			models.Add (model);
+			if (models.Count % 9 == 0) {
+				modelOffsetY += 0.5f;
+				modelOffsetX = 0.0f;
+			}
+
+			transferSelectionToModel (model);
+
+			resetTestModel();
+		}
+	}
+
+	void select() {
+		if (selectedSpheres.Count > 0) {
+			if (highlightedSphere != null) {
+				highlightedSphere.GetComponent<Select> ().isSelected = true;
+				GameObject line = drawLine (selectedSpheres.Last().transform.position, highlightedSphere.transform.position, Color.red);
+				sphereLines.Add (line);
+				selectedSpheres.Add (highlightedSphere);
+			}
+		} else {
+			if (highlightedSphere != null) {
+				highlightedSphere.GetComponent<Select> ().isSelected = true;
+				selectedSpheres.Add (highlightedSphere);
+			}
+		}
+	}
+
+	void undoSelect() {
+		selectedSpheres.Last ().GetComponent<Select> ().isSelected = false;
+		selectedSpheres.RemoveAt (selectedSpheres.Count-1);
+
+		Destroy (sphereLines.Last());
+		sphereLines.RemoveAt (sphereLines.Count-1);
+	}
+
+	GameObject drawLine(Vector3 start , Vector3 end, Color color){
+
+		GameObject line = new GameObject ();
+		line.transform.position = start;
+		line.AddComponent<LineRenderer> ();
+		LineRenderer lr = line.GetComponent<LineRenderer> ();
+		lr.material = new Material (Shader.Find ("Particles/Additive"));
+		lr.SetColors (color,color);
+		lr.SetWidth (0.05f,0.05f);
+		lr.SetPosition (0, start);
+		lr.SetPosition (1, end);
+
+		return line;
+	}
+
+	IEnumerator countdown() {
+		while (min > 0 || sec >= 0) {
+			if (sec > 0) {
+				sec--;
+			} else {
+				sec = 59;
+				min--;
+			}
+			timer.text = string.Format ("{0:00}:{1:00}", min, sec);
+			yield return new WaitForSeconds (1);
+		}
+	}
 }
 
