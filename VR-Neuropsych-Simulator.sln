@@ -1,7 +1,6 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
-MinimumVisualStudioVersion = 10.0.40219.1
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
 Project("{54FB6E05-8502-3F03-CBCB-F3A8A1CFC142}") = "VR-Neuropsych-Simulator", "Assembly-CSharp-firstpass.csproj", "{F4FE8FB9-CF01-DD8B-1971-16046E0BCE81}"
 EndProject
 Project("{54FB6E05-8502-3F03-CBCB-F3A8A1CFC142}") = "VR-Neuropsych-Simulator", "Assembly-CSharp.csproj", "{83589E83-EF51-B48C-AE9A-6FCB42FAC2B3}"
@@ -32,8 +31,5 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
-	EndGlobalSection
+	EndGlobalSection	GlobalSection(MonoDevelopProperties) = preSolution
 EndGlobal
