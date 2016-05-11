@@ -52,7 +52,7 @@ public class FivePointTest : MonoBehaviour {
 			saveModel ();
 		}
 
-		Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+		Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.55f, 0.55f, 0));
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit)) {
 			string target = hit.transform.name;
@@ -117,7 +117,7 @@ public class FivePointTest : MonoBehaviour {
 			}
 			curr.GetComponentInChildren<Select> ().isSelected = true;
 			if (prev != null && prev != curr) {
-				modelLines.Add(drawLine (prev.position, curr.position, Color.red));
+				modelLines.Add(drawLine (prev.position, curr.position, Color.red, false));
 			}
 			prev = curr;
 			// reset point for new pattern
@@ -149,7 +149,7 @@ public class FivePointTest : MonoBehaviour {
 		if (selectedSpheres.Count > 0) {
 			if (highlightedSphere != null) {
 				highlightedSphere.GetComponent<Select> ().isSelected = true;
-				GameObject line = drawLine (selectedSpheres.Last().transform.position, highlightedSphere.transform.position, Color.red);
+				GameObject line = drawLine (selectedSpheres.Last().transform.position, highlightedSphere.transform.position, Color.red, true);
 				sphereLines.Add (line);
 				selectedSpheres.Add (highlightedSphere);
 			}
@@ -169,15 +169,18 @@ public class FivePointTest : MonoBehaviour {
 		sphereLines.RemoveAt (sphereLines.Count-1);
 	}
 
-	GameObject drawLine(Vector3 start , Vector3 end, Color color){
+	GameObject drawLine(Vector3 start , Vector3 end, Color color, bool large){
 
 		GameObject line = new GameObject ();
 		line.transform.position = start;
 		line.AddComponent<LineRenderer> ();
 		LineRenderer lr = line.GetComponent<LineRenderer> ();
-		lr.material = new Material (Shader.Find ("Particles/Additive"));
-		lr.SetColors (color,color);
-		lr.SetWidth (0.05f,0.05f);
+		lr.material = (Material)Resources.Load("Materials/red");
+		if (large) {
+			lr.SetWidth (0.05f, 0.05f);
+		} else {
+			lr.SetWidth (0.025f, 0.025f);
+		}
 		lr.SetPosition (0, start);
 		lr.SetPosition (1, end);
 
