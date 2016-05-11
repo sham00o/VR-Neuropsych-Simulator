@@ -39,6 +39,9 @@ public class SwitchToSim : MonoBehaviour {
             cam2.GetComponent<Rotation>().turn_right_flag = false;
             cam2.GetComponent<Rotation>().start_protect = false;
             cam2.GetComponent<Rotation>().startSpeed = 0;
+			cam2.GetComponent<Rotation> ().turn_right_flag2 = false;
+			cam2.GetComponent<Rotation> ().turn_right_flag3 = false;
+			cam2.GetComponent<Rotation> ().endFlag = false;
         }
         
         
@@ -49,7 +52,7 @@ public class SwitchToSim : MonoBehaviour {
             cam2.transform.position = startingPos2;
             cam2.transform.rotation = Quaternion.Euler(startingRot2);
 
-            Debug.Log("yo");
+            //zzzzzDebug.Log("yo");
             cam2.GetComponent<Rotation>().start = true;
         }
     }

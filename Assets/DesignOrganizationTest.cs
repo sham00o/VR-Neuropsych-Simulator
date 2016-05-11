@@ -23,7 +23,7 @@ public class DesignOrganizationTest : MonoBehaviour {
     //after the test, decide to output all squares or not at the end
     //TIME THIS from testA to end, two minute test.
 	void Start () {
-        
+		Random rnd = new Random ();
         initial = new GameObject[6];
         example = new GameObject[3][];
         testA = new GameObject[4][];
@@ -31,11 +31,13 @@ public class DesignOrganizationTest : MonoBehaviour {
         init();
         example_init();
         disappear_ex();
-        testA_init(1);
+		int num = random_num();
+		testA_init(num);
         disappear_A();
-        testA_small_init(1);
+        testA_small_init(num);
         disappear_A_small();
         //make a random number 0(A) or 1(B)
+
 	}
 	
 	// Update is called once per frame
@@ -450,5 +452,16 @@ public class DesignOrganizationTest : MonoBehaviour {
         Renderer r = a.GetComponent<Renderer>();
         Texture2D t = (Texture2D)Resources.Load(tex, typeof(Texture2D));
         r.material.mainTexture = t;
-    }
+		//r.material.color.a = 1.0f;
+	}
+	int random_num(){
+		float val = Random.value;
+		int ret;
+		if (val < 0.5f) {
+			ret = 0;
+		} else {
+			ret = 1;
+		}
+		return ret;
+	}
 }

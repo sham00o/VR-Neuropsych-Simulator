@@ -15,9 +15,16 @@ public class Rotation : MonoBehaviour {
     public  bool start = false;
     public bool upFlag = false;
     public bool start_protect = false;
-    // Use this for initialization
+	public bool turn_right_flag2 = false;
+	public bool turn_right_flag3 = false;
+	public bool endFlag = false;
+	GameObject Menu;
+	Text hold;
+	// Use this for initialization
     void Start () {
-        
+		Menu = GameObject.Find ("Menu");
+		hold = Menu.GetComponent<UnityEngine.UI.Text> ();
+		Debug.Log(hold);
     }
 
     // Update is called once per frame
@@ -52,12 +59,28 @@ public class Rotation : MonoBehaviour {
 
            // }
             if (turn_right_flag)
-            {
+			{
                 StartCoroutine("turn_right");
                 StartCoroutine("str2");
+				turn_right_flag2 = true;
             }
+			if (turn_right_flag2) {
+				//Debug.Log ("This is active now!");
+				StartCoroutine ("str4");
+				StartCoroutine ("turn_right2");
+				turn_right_flag3 = true;
 
 
+			}
+			if (turn_right_flag3) {
+				StartCoroutine ("str5");
+				StartCoroutine ("turn_right3");
+				endFlag = true;
+			}
+			if (endFlag) {
+				StartCoroutine ("end");
+				endFlag = false;
+			}
             
 
             if (Input.GetKey(KeyCode.JoystickButton0) && !start_protect)
@@ -65,57 +88,14 @@ public class Rotation : MonoBehaviour {
                 startFlag = true;
             }/*
             if (Input.GetKey(KeyCode.JoystickButton4)) //LB is button 4
-            {
-                transform.Rotate(0, 0, rotateDiff);
-                // print("LB button pressed");
-            }
-            if (Input.GetKey(KeyCode.JoystickButton5)) // RB is button 5
-            {
-                transform.Rotate(0, 0, -rotateDiff);
-                //print("RB button pressed"); //works
-            }
-            if (Input.GetAxis("RT") == 1)
-            {
-                //print("RT button pressed");
-            }
-            if (Input.GetAxis("Horizontal1") == 1)
-            {
-                if (startSpeed < MaxSpeed)
-                    startSpeed += speed;
-                //transform.Translate(0, 0, speedDiff);
+			
+            */
+			if (!startFlag && start_protect) {
+				Menu.active = false;
+			} else {
+				Menu.active = true;
+			}
 
-                // print("accel");
-            }
-            if (Input.GetAxis("Horizontal1") == -1)
-            {
-                if (startSpeed != 0)
-                {
-                    startSpeed -= speed;
-                    //transform.Translate(0, 0, speedDiff);
-                }
-
-                //print("deAccel");
-            }
-            if (Input.GetAxis("Vertical1") == 1)
-            {
-                transform.Rotate(0, -lrotateDiff, 0);
-                //print("going left");
-            }
-            if (Input.GetAxis("Vertical1") == -1)
-            {
-                transform.Rotate(0, lrotateDiff, 0);
-                //print("going right");
-            }
-            if (Input.GetAxis("Horizontal2") == -1)
-            {
-                transform.Rotate(rotateDiff, 0, 0);
-                // print("going up");
-            }
-            if (Input.GetAxis("Horizontal2") == 1)
-            {
-                transform.Rotate(-rotateDiff, 0, 0);
-                // print("going down");
-            }*/
         }
     }
     void Speedup()
@@ -161,5 +141,43 @@ public class Rotation : MonoBehaviour {
     {
         yield return new WaitForSeconds(8);
         upFlag = false;
-    }
-}
+	}
+	IEnumerator turn_right2(){
+		float lrotateDiff = leftrightrotate * Time.deltaTime;
+
+		yield return new WaitForSeconds(33.5f);
+		if (turn_right_flag2) {
+			transform.Rotate (0, lrotateDiff * 1.5f, 0);
+		}
+		//Debug.Log ("turning right");
+
+
+	}
+	IEnumerator str4()
+	{
+		yield return new WaitForSeconds(37);
+		//Debug.Log ("this is working now");
+		turn_right_flag2 = false;
+	}
+	IEnumerator turn_right3(){
+		float lrotateDiff = leftrightrotate * Time.deltaTime;
+
+		yield return new WaitForSeconds(44f);
+		if (turn_right_flag3) {
+			transform.Rotate (0, lrotateDiff * 1.5f, 0);
+		}
+		//Debug.Log ("turning right");
+
+
+	}
+	IEnumerator str5()
+	{
+		yield return new WaitForSeconds(48.5f);
+		//Debug.Log ("this is working now");
+		turn_right_flag3 = false;
+	}
+	IEnumerator end(){
+		yield return new WaitForSeconds (60);
+		startSpeed = 0;
+	}
+}	
