@@ -28,14 +28,11 @@ public class DesignOrganizationTest : MonoBehaviour {
     //after the test, decide to output all squares or not at the end
     //TIME THIS from testA to end, two minute test.
 	void Start () {
-<<<<<<< HEAD
 		Random rnd = new Random ();
-=======
 		highlightedBox = null;
 		selectedBox = null;
 		exampleEntries = new List<GameObject> ();
 		testEntries = new List<GameObject> ();
->>>>>>> origin/master
         initial = new GameObject[6];
         example = new GameObject[3][];
         testA = new GameObject[4][];
