@@ -64,7 +64,7 @@ public class DesignOrganizationTest : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.JoystickButton5) && exampleFlag)
         {
             disappear_ex();
-			disappear_init();
+			//disappear_init();
 			appear_A();
             appear_A_small();
             testAflag = true;
