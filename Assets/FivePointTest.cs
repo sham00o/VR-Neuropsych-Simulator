@@ -44,7 +44,7 @@ public class FivePointTest : MonoBehaviour {
 			select ();
 		}
 
-		if (Input.GetKeyDown ("b")) {
+		if (Input.GetKeyDown ("y")) {
 			undoSelect ();
 		}
 

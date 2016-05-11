@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 public class DesignOrganizationTest : MonoBehaviour {
     public GameObject[] initial;
@@ -8,11 +10,14 @@ public class DesignOrganizationTest : MonoBehaviour {
     public GameObject[][] testA;
     public GameObject[][] testA_small;
     public Rigidbody box;
+	List<GameObject> exampleEntries, testEntries;
+	GameObject highlightedBox, selectedBox;
     bool exampleFlag = false;
     bool testAflag = false;
     bool testBflag = false;
-    bool noFlags = true;
-    bool noFlagspre = false;
+    bool noFlags = false;
+    bool noFlagspre = true;
+	bool isSelecting = false;
 
     // Use this for initialization
     //TODO:
@@ -23,12 +28,20 @@ public class DesignOrganizationTest : MonoBehaviour {
     //after the test, decide to output all squares or not at the end
     //TIME THIS from testA to end, two minute test.
 	void Start () {
+<<<<<<< HEAD
 		Random rnd = new Random ();
+=======
+		highlightedBox = null;
+		selectedBox = null;
+		exampleEntries = new List<GameObject> ();
+		testEntries = new List<GameObject> ();
+>>>>>>> origin/master
         initial = new GameObject[6];
         example = new GameObject[3][];
         testA = new GameObject[4][];
         testA_small = new GameObject[5][];
         init();
+		disappear_init();
         example_init();
         disappear_ex();
 		int num = random_num();
@@ -42,14 +55,14 @@ public class DesignOrganizationTest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
        if(Input.GetKeyDown(KeyCode.B) && testAflag)
         {
+			disappear_init ();
             disappear_A();
             disappear_A_small();
-           testAflag = false;
+            testAflag = false;
             noFlagspre = true;
-            appear_init();
-
         }
         if (Input.GetKeyDown(KeyCode.B) && exampleFlag)
         {
@@ -58,23 +71,94 @@ public class DesignOrganizationTest : MonoBehaviour {
             appear_A_small();
             testAflag = true;
             exampleFlag = false;
-
         }
         if (Input.GetKeyDown(KeyCode.B) && noFlags){
-            disappear_init();
             noFlags = false;
             exampleFlag = true;
             appear_ex();
+			show_board (false);
         }
-        if (noFlagspre){
+		if (Input.GetKeyDown(KeyCode.B) && noFlagspre){
+			appear_init ();
             noFlags = true;
             noFlagspre = false;
         }
-        
+
+		if (Input.GetKeyDown ("1") && isSelecting) {
+			TextMesh curr = selectedBox.transform.Find ("Number").GetComponent<TextMesh> ();
+			string num = curr.text;
+			switch (num) {
+			case "":
+				curr.text = "1";
+				break;
+			case "1":
+				curr.text = "2";
+				break;
+			case "2":
+				curr.text = "3";
+				break;
+			case "3":
+				curr.text = "4";
+				break;
+			case "4":
+				curr.text = "5";
+				break;
+			case "5":
+				curr.text = "6";
+				break;
+			case "6":
+				curr.text = "";
+				break;
+			}
+		}
+
+		if (Input.GetKeyDown ("t")) {
+			select ();
+		}
+
+		Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit)) {
+			string target = hit.transform.name;
+			if (target == "Box") {
+				if (highlightedBox == null) {
+					highlightedBox = hit.collider.gameObject;
+				}
+				highlightedBox.GetComponent<Select> ().isHighlighted = false;
+				highlightedBox = hit.collider.gameObject;
+				hit.collider.gameObject.GetComponent<Select> ().isHighlighted = true;
+			}
+		}
 	}
+
+	void select() {
+		if (highlightedBox != null) {
+			isSelecting = true;
+			if (selectedBox != null)
+				selectedBox.GetComponent<Select> ().isSelected = false;
+			selectedBox = highlightedBox;
+			selectedBox.GetComponent<Select> ().isSelected = true;
+		} else {
+			isSelecting = false;
+			selectedBox.GetComponent<Select> ().isSelected = false;
+			selectedBox = null;
+		}
+	}
+
+	void show_board(bool active) {
+		GameObject.Find ("Board").SetActive (active);
+	}
+
+
     void init()
     {
-        int len = 6;
+		initial[0] = (GameObject)Instantiate (Resources.Load ("Block 1"));
+		initial[1] = (GameObject)Instantiate (Resources.Load ("Block 2"));
+		initial[2] = (GameObject)Instantiate (Resources.Load ("Block 3"));
+		initial[3] = (GameObject)Instantiate (Resources.Load ("Block 4"));
+		initial[4] = (GameObject)Instantiate (Resources.Load ("Block 5"));
+		initial[5] = (GameObject)Instantiate (Resources.Load ("Block 6"));
+		/*  int len = 6;
         int i = 0;
         for(; i < len; i++)
         {
@@ -89,7 +173,7 @@ public class DesignOrganizationTest : MonoBehaviour {
         assign_shade(initial[2], "block3");
         assign_shade(initial[3], "block4");
         assign_shade(initial[4], "block5");
-        assign_shade(initial[5], "block6");
+        assign_shade(initial[5], "block6"); */
     }
     void disappear_init()
     {
@@ -125,15 +209,21 @@ public class DesignOrganizationTest : MonoBehaviour {
                 // r.material.mainTexture = t;
                 if ( j % 2 == 0)
                 {
-                    example[i][j].transform.position = new Vector3(x - (i * .5f) - j * .1f, top-.2f, z);
+					example[i][j].transform.position = new Vector3((x - (i * .5f) - j * .1f) - .4f, top-.2f, z);
                     currx = (x - (i * .5f) - j * .1f);
                 }
                 else
                 {
-                    example[i][j].transform.position = new Vector3(currx, top, z);
+                    example[i][j].transform.position = new Vector3(currx - .4f, top, z);
                     
                 }
             }
+			GameObject entry = (GameObject)Instantiate (Resources.Load ("2x2 Entry"));
+			Vector3 entryPosition = example[i][0].transform.position;
+			entryPosition.x -= 0.2f;
+			entryPosition.y -= 0.25f;
+			entry.transform.position = entryPosition;
+			exampleEntries.Add (entry);
         }
         assign_shade(example[0][0], "block6");
         assign_shade(example[0][1], "block1");
@@ -160,6 +250,9 @@ public class DesignOrganizationTest : MonoBehaviour {
                 example[i][j].active = false;
             }
         }
+		foreach (GameObject entry in exampleEntries) {
+			entry.SetActive (false);
+		}
     }
     void appear_ex()
     {
@@ -172,6 +265,9 @@ public class DesignOrganizationTest : MonoBehaviour {
                 }
             }
         }
+		foreach (GameObject entry in exampleEntries) {
+			entry.SetActive (true);
+		}
     }
 
 
@@ -198,15 +294,21 @@ public class DesignOrganizationTest : MonoBehaviour {
                 // r.material.mainTexture = t;
                 if (j % 2 == 0)
                 {
-                    testA_small[i][j].transform.position = new Vector3(x - (i * .5f) - j * .1f, top - .2f, z);
+					testA_small[i][j].transform.position = new Vector3((x - (i * .5f) - j * .1f) + 0.1f, top - .2f, z);
                     currx = (x - (i * .5f) - j * .1f);
                 }
                 else
                 {
-                    testA_small[i][j].transform.position = new Vector3(currx, top, z);
+					testA_small[i][j].transform.position = new Vector3(currx + 0.1f, top, z);
 
                 }
             }
+			GameObject entry = (GameObject)Instantiate (Resources.Load ("2x2 Entry"));
+			Vector3 entryPosition = testA_small[i][0].transform.position;
+			entryPosition.x -= 0.2f;
+			entryPosition.y -= 0.25f;
+			entry.transform.position = entryPosition;
+			testEntries.Add (entry);
         }
         if (test == 0)
         {
@@ -298,6 +400,12 @@ public class DesignOrganizationTest : MonoBehaviour {
 
                 }
             }
+			GameObject entry = (GameObject)Instantiate (Resources.Load ("3x3 Entry"));
+			Vector3 entryPosition = testA[i][0].transform.position;
+			entryPosition.x -= 0.2f;
+			entryPosition.y -= 0.25f;
+			entry.transform.position = entryPosition;
+			testEntries.Add (entry);
         }
         //if(testa...., keep testA var name, if testB just assign different
         if (test == 0)
@@ -412,6 +520,9 @@ public class DesignOrganizationTest : MonoBehaviour {
                 }
             }
         }
+		foreach (GameObject entry in testEntries) {
+			entry.SetActive (false);
+		}
     }
     void appear_A()
     {
@@ -424,6 +535,9 @@ public class DesignOrganizationTest : MonoBehaviour {
                 }
             }
         }
+		foreach (GameObject entry in testEntries) {
+			entry.SetActive (true);
+		}
     }
     void appear_A_small()
     {
@@ -436,6 +550,9 @@ public class DesignOrganizationTest : MonoBehaviour {
                 }
             }
         }
+		foreach (GameObject entry in testEntries) {
+			entry.SetActive (true);
+		}
     }
     void disappear_A_small()
     {
@@ -446,6 +563,9 @@ public class DesignOrganizationTest : MonoBehaviour {
                 testA_small[i][j].active = false;
             }
         }
+		foreach (GameObject entry in testEntries) {
+			entry.SetActive (false);
+		}
     }
     void assign_shade(GameObject a, string tex)
     {
